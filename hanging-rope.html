@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Hanging Rope Builder</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="minecraft-renderer.js"></script>
+</head>
+<body>
+    <h1>Minecraft Hanging Rope Builder</h1>
+    <div>
+        <label for="ha">Height of Point A (0-50 blocks):</label>
+        <input type="range" id="ha" min="0" max="50" value="10" step="1">
+        <span id="ha_val">10</span>
+    </div>
+    <div>
+        <label for="hb">Height of Point B (0-50 blocks):</label>
+        <input type="range" id="hb" min="0" max="50" value="10" step="1">
+        <span id="hb_val">10</span>
+    </div>
+    <div>
+        <label for="dist">Distance between A and B (0-100 blocks):</label>
+        <input type="range" id="dist" min="0" max="100" value="20" step="1">
+        <span id="dist_val">20</span>
+    </div>
+    <div>
+        <label for="extra">Extra length of the rope (0-50):</label>
+        <input type="range" id="extra" min="0" max="20" value="0" step="0.1">
+        <span id="extra_val">0.0</span>
+    </div>
+    <div>
+        <label for="blocksize">Block render size (5-50 pixels):</label>
+        <input type="range" id="blocksize" min="5" max="50" value="10" step="1">
+        <span id="blocksize_val">10</span>
+    </div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        initRenderer('canvas');
+
+        const haSlider = document.getElementById('ha');
+        const hbSlider = document.getElementById('hb');
+        const distSlider = document.getElementById('dist');
+        const extraSlider = document.getElementById('extra');
+        const blocksizeSlider = document.getElementById('blocksize');
+        const haVal = document.getElementById('ha_val');
+        const hbVal = document.getElementById('hb_val');
+        const distVal = document.getElementById('dist_val');
+        const extraVal = document.getElementById('extra_val');
+        const blocksizeVal = document.getElementById('blocksize_val');
+
+        function update() {
+            const ha = parseInt(haSlider.value);
+            const hb = parseInt(hbSlider.value);
+            const dx = parseInt(distSlider.value);
+            const extra = parseFloat(extraSlider.value);
+            const blocksize = parseInt(blocksizeSlider.value);
+
+            haVal.innerText = ha;
+            hbVal.innerText = hb;
+            distVal.innerText = dx;
+            extraVal.innerText = extra.toFixed(1);
+            blocksizeVal.innerText = blocksize;
+
+            if (dx === 0) {
+                clearBlocks();
+                render();
+                return;
+            }
+
+            const dy = hb - ha;
+            const straight_len = Math.sqrt(dx * dx + dy * dy);
+            const L = straight_len + extra;
+            let straight_mode = (extra === 0);
+            let a, b, c;
+
+            if (!straight_mode) {
+                const xbar = dx / 2;
+                const ybar = (ha + hb) / 2;
+                const r = Math.sqrt(L * L - dy * dy) / dx;
+                if (r <= 1) {
+                    straight_mode = true;
+                } else {
+                    let A0;
+                    if (r < 3) {
+                        A0 = Math.sqrt(6 * (r - 1));
+                    } else {
+                        A0 = Math.log(2 * r) + Math.log(Math.log(2 * r));
+                    }
+                    let A = A0;
+                    for (let iter = 0; iter < 20; iter++) {
+                        const sinhA = Math.sinh(A);
+                        const coshA = Math.cosh(A);
+                        const f = sinhA - r * A;
+                        const df = coshA - r;
+                        const delta = f / df;
+                        A -= delta;
+                        if (Math.abs(delta) < 1e-6) break;
+                    }
+                    a = dx / (2 * A);
+                    b = xbar - a * Math.atanh(dy / L);
+                    c = ybar - L / (2 * Math.tanh(A));
+                }
+            }
+
+            function get_y(x) {
+                if (straight_mode) {
+                    return ha + (hb - ha) * (x / dx);
+                } else {
+                    return a * Math.cosh((x - b) / a) + c;
+                }
+            }
+
+            const samples = [];
+            const step = 0.1;
+            for (let x = 0; x <= dx; x += step) {
+                samples.push({ x: x, y: get_y(x) });
+            }
+            // Ensure exact endpoints
+            samples[0].y = ha;
+            samples[samples.length - 1].y = hb;
+
+            let min_curve = Math.min(...samples.map(s => s.y));
+            let max_curve = Math.max(...samples.map(s => s.y));
+            const min_y = Math.min(0, Math.floor(min_curve));
+            const max_y = Math.max(ha, hb, Math.ceil(max_curve));
+
+            // Collect rope cells
+            const rope_cells = new Set();
+            for (let s of samples) {
+                const ix = Math.floor(s.x);
+                const iy = Math.floor(s.y);
+                rope_cells.add(`${ix},${iy}`);
+            }
+
+            clearBlocks();
+
+            // Fill towers
+            for (let iy = Math.max(min_y, 0); iy <= ha; iy++) {
+                drawBlock(0, iy, 'red');
+            }
+            for (let iy = Math.max(min_y, 0); iy <= hb; iy++) {
+                drawBlock(dx, iy, 'red');
+            }
+
+            // Fill rope
+            for (let key of rope_cells) {
+                const [ix, iy] = key.split(',').map(Number);
+                if (iy >= min_y && iy <= max_y) {
+                    drawBlock(ix, iy, 'black');
+                }
+            }
+
+            setBlockSize(blocksize);
+            render();
+        }
+
+        haSlider.oninput = update;
+        hbSlider.oninput = update;
+        distSlider.oninput = update;
+        extraSlider.oninput = update;
+        blocksizeSlider.oninput = update;
+
+        // Initial draw
+        update();
+    </script>
+</body>
+</html>
