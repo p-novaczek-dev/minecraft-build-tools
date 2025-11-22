@@ -5,33 +5,57 @@
     <title>Minecraft Hanging Rope Builder</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="minecraft-renderer.js"></script>
+    <style>
+
+    </style>
 </head>
 <body>
+    <a href="index.html" class="back-button">← Back to Tools</a>
     <h1>Minecraft Hanging Rope Builder</h1>
-    <div>
-        <label for="ha">Height of Point A (0-50 blocks):</label>
-        <input type="range" id="ha" min="0" max="50" value="10" step="1">
-        <span id="ha_val">10</span>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="ha">Height Left:</label>
+            <span id="ha_val" class="slider-value">10</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="ha" min="0" max="50" value="10" step="1" class="slider-control">
+        </div>
     </div>
-    <div>
-        <label for="hb">Height of Point B (0-50 blocks):</label>
-        <input type="range" id="hb" min="0" max="50" value="10" step="1">
-        <span id="hb_val">10</span>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="hb">Height Right:</label>
+            <span id="hb_val" class="slider-value">10</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="hb" min="0" max="50" value="10" step="1" class="slider-control">
+        </div>
     </div>
-    <div>
-        <label for="dist">Distance between A and B (0-100 blocks):</label>
-        <input type="range" id="dist" min="0" max="100" value="20" step="1">
-        <span id="dist_val">20</span>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="dist">Distance:</label>
+            <span id="dist_val" class="slider-value">25</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="dist" min="0" max="99" value="24" step="1" class="slider-control">
+        </div>
     </div>
-    <div>
-        <label for="extra">Extra length of the rope (0-50):</label>
-        <input type="range" id="extra" min="0" max="20" value="0" step="0.1">
-        <span id="extra_val">0.0</span>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="extra">Extra length of the rope:</label>
+            <span id="extra_val" class="slider-value">1.0</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="extra" min="0" max="20" value="1" step="0.1" class="slider-control">
+        </div>
     </div>
-    <div>
-        <label for="blocksize">Block render size (5-50 pixels):</label>
-        <input type="range" id="blocksize" min="5" max="50" value="10" step="1">
-        <span id="blocksize_val">10</span>
+    <div class="slider-row slider-row-block-size">
+        <div class="slider-label-col">
+            <label for="blocksize">Block render size:</label>
+            <span id="blocksize_val" class="slider-value">10</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="blocksize" min="3" max="30" value="10" step="1" class="slider-control">
+        </div>
     </div>
     <canvas id="canvas"></canvas>
 
@@ -58,7 +82,7 @@
 
             haVal.innerText = ha;
             hbVal.innerText = hb;
-            distVal.innerText = dx;
+            distVal.innerText = dx + 1;
             extraVal.innerText = extra.toFixed(1);
             blocksizeVal.innerText = blocksize;
 
@@ -112,9 +136,8 @@
             }
 
             const samples = [];
-            const step = 0.1;
-            for (let x = 0; x <= dx; x += step) {
-                samples.push({ x: x, y: get_y(x) });
+            for (let i = 0; i <= dx; i++) {
+                samples.push({ x: i, y: get_y(i) });
             }
             // Ensure exact endpoints
             samples[0].y = ha;
@@ -140,14 +163,14 @@
                 drawBlock(0, iy, 'red');
             }
             for (let iy = Math.max(min_y, 0); iy <= hb; iy++) {
-                drawBlock(dx, iy, 'red');
+                drawBlock(dx + 2, iy, 'red');
             }
 
             // Fill rope
             for (let key of rope_cells) {
                 const [ix, iy] = key.split(',').map(Number);
                 if (iy >= min_y && iy <= max_y) {
-                    drawBlock(ix, iy, 'black');
+                    drawBlock(ix + 1, iy, 'black');
                 }
             }
 

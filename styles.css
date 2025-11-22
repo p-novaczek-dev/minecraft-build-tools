@@ -1,5 +1,20 @@
+
 body {
     font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
 }
 
 canvas {
@@ -7,4 +22,63 @@ canvas {
     margin: 20px auto;
     border-bottom: 1px solid lightgray;
     border-right: 1px solid lightgray;
+}
+
+.back-button {
+    display: inline-block;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #4a90e2;
+    color: white;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background 0.2s;
+}
+
+.back-button:hover {
+    background: #357abd;
+}
+
+.slider-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.slider-label-col {
+    width: 50%;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.slider-value {
+    font-weight: bold;
+    color: red;
+}
+
+.slider-control-col {
+    width: 50%;
+}
+
+.slider-control {
+    width: 100%;
+}
+
+.slider-row-block-size .slider-control {
+    accent-color: blue;
+}
+
+.slider-row-block-size .slider-control::-webkit-slider-thumb {
+    background: blue;
+}
+
+.slider-row-block-size .slider-control::-moz-range-thumb {
+    background: blue;
+}
+
+.slider-row-block-size .slider-value {
+    color: blue;
 }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Circle Generator</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="minecraft-renderer.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Back to Tools</a>
+    <h1>Minecraft Circle Generator</h1>
+    
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="radius">Circle radius:</label>
+            <span id="radius_val" class="slider-value">20</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="radius" min="1" max="50" value="20" step="1" class="slider-control">
+        </div>
+    </div>
+    
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="thickness">Line thickness:</label>
+            <span id="thickness_val" class="slider-value">1</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="thickness" min="1" max="10" value="1" step="1" class="slider-control">
+        </div>
+    </div>
+    
+    <div class="slider-row slider-row-block-size">
+        <div class="slider-label-col">
+            <label for="blocksize">Block render size:</label>
+            <span id="blocksize_val" class="slider-value">10</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="blocksize" min="3" max="30" value="10" step="1" class="slider-control">
+        </div>
+    </div>
+    
+    <canvas id="canvas"></canvas>
+
+    <script>
+        initRenderer('canvas');
+
+        const radiusSlider = document.getElementById('radius');
+        const thicknessSlider = document.getElementById('thickness');
+        const blocksizeSlider = document.getElementById('blocksize');
+        const radiusVal = document.getElementById('radius_val');
+        const thicknessVal = document.getElementById('thickness_val');
+        const blocksizeVal = document.getElementById('blocksize_val');
+
+        function update() {
+            const radius = parseInt(radiusSlider.value);
+            const thickness = parseInt(thicknessSlider.value);
+            const blocksize = parseInt(blocksizeSlider.value);
+
+            radiusVal.innerText = radius;
+            thicknessVal.innerText = thickness;
+            blocksizeVal.innerText = blocksize;
+
+            clearBlocks();
+
+            // Generate circle as a filled ring
+            const r = radius;
+            const half_thickness = thickness / 2.0;
+
+            for (let x = -r - thickness; x <= r + thickness; x++) {
+                for (let y = -r - thickness; y <= r + thickness; y++) {
+                    const dist = Math.sqrt(x * x + y * y);
+                    if (dist >= r - half_thickness && dist <= r + half_thickness) {
+                        drawBlock(x + r, y + r, 'black');
+                    }
+                }
+            }
+
+            setBlockSize(blocksize);
+            render();
+        }
+
+        radiusSlider.oninput = update;
+        thicknessSlider.oninput = update;
+        blocksizeSlider.oninput = update;
+
+        // Initial draw
+        update();
+    </script>
+</body>
+</html>
