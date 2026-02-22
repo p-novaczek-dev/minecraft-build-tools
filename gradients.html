@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Minecraft Gradient Builder</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <script src="minecraft-renderer.js"></script>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Back to Tools</a>
+    <h1>Minecraft Gradient Builder</h1>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="width">Width:</label>
+            <span id="width_val" class="slider-value">10</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="width" min="1" max="100" value="10" step="1" class="slider-control">
+        </div>
+    </div>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="height">Height:</label>
+            <span id="height_val" class="slider-value">20</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="height" min="1" max="100" value="20" step="1" class="slider-control">
+        </div>
+    </div>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="fromOpacity">From Opacity (Top):</label>
+            <span id="fromOpacity_val" class="slider-value">100</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="fromOpacity" min="0" max="100" value="100" step="1" class="slider-control">
+        </div>
+    </div>
+    <div class="slider-row">
+        <div class="slider-label-col">
+            <label for="toOpacity">To Opacity (Bottom):</label>
+            <span id="toOpacity_val" class="slider-value">0</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="toOpacity" min="0" max="100" value="0" step="1" class="slider-control">
+        </div>
+    </div>
+    <div class="slider-row slider-row-block-size">
+        <div class="slider-label-col">
+            <label for="blocksize">Block render size:</label>
+            <span id="blocksize_val" class="slider-value">10</span>
+        </div>
+        <div class="slider-control-col">
+            <input type="range" id="blocksize" min="3" max="30" value="10" step="1" class="slider-control">
+        </div>
+    </div>
+    <button id="refresh" class="refresh-button">Refresh Gradient</button>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        initRenderer('canvas');
+
+        const widthSlider = document.getElementById('width');
+        const heightSlider = document.getElementById('height');
+        const fromOpacitySlider = document.getElementById('fromOpacity');
+        const toOpacitySlider = document.getElementById('toOpacity');
+        const blocksizeSlider = document.getElementById('blocksize');
+        const widthVal = document.getElementById('width_val');
+        const heightVal = document.getElementById('height_val');
+        const fromOpacityVal = document.getElementById('fromOpacity_val');
+        const toOpacityVal = document.getElementById('toOpacity_val');
+        const blocksizeVal = document.getElementById('blocksize_val');
+
+        function update() {
+            const width = parseInt(widthSlider.value);
+            const height = parseInt(heightSlider.value);
+            const fromOpacity = parseInt(fromOpacitySlider.value);
+            const toOpacity = parseInt(toOpacitySlider.value);
+            const blocksize = parseInt(blocksizeSlider.value);
+
+            widthVal.innerText = width;
+            heightVal.innerText = height;
+            fromOpacityVal.innerText = fromOpacity;
+            toOpacityVal.innerText = toOpacity;
+            blocksizeVal.innerText = blocksize;
+
+            clearBlocks();
+
+            if (width < 1 || height < 1) {
+                render();
+                return;
+            }
+
+            // Assuming y=0 is bottom, y=height-1 is top
+            for (let y = 0; y < height; y++) {
+                // fraction from top: y / (height - 1)
+                const fraction = y / (height - 1);
+                const opacity = fromOpacity + (toOpacity - fromOpacity) * fraction;
+                const prob = opacity / 100;
+
+                for (let x = 0; x < width; x++) {
+                    const color = Math.random() < prob ? 'black' : 'white';
+                    // Since renderer flips y for canvas, but coordinates are y up, so y=0 bottom, y=height-1 top
+                    drawBlock(x, height - 1 - y, color);
+                }
+            }
+
+            setBlockSize(blocksize);
+            render();
+        }
+
+        widthSlider.oninput = update;
+        heightSlider.oninput = update;
+        fromOpacitySlider.oninput = update;
+        toOpacitySlider.oninput = update;
+        blocksizeSlider.oninput = update;
+        document.getElementById('refresh').onclick = update;
+
+        // Initial draw
+        update();
+    </script>
+</body>
+</html>
