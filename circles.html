@@ -2,48 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft Circle Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="minecraft-renderer.js"></script>
-    <style>
-
-    </style>
 </head>
 <body>
     <a href="index.html" class="back-button">← Back to Tools</a>
-    <h1>Minecraft Circle Generator</h1>
-    
-    <div class="slider-row">
-        <div class="slider-label-col">
-            <label for="radius">Circle radius:</label>
-            <span id="radius_val" class="slider-value">20</span>
+    <main class="page">
+        <header class="page-header">
+            <h1>Minecraft Circle Generator</h1>
+            <p class="page-subtitle">Build perfect circles for towers, domes, and floor plans</p>
+        </header>
+
+        <div class="controls">
+            <div class="slider-row">
+                <div class="slider-label-col">
+                    <label for="radius">Circle radius:</label>
+                    <span id="radius_val" class="slider-value">20</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="radius" min="1" max="50" value="20" step="1" class="slider-control">
+                </div>
+            </div>
+
+            <div class="slider-row">
+                <div class="slider-label-col">
+                    <label for="thickness">Line thickness:</label>
+                    <span id="thickness_val" class="slider-value">1</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="thickness" min="1" max="10" value="1" step="1" class="slider-control">
+                </div>
+            </div>
+
+            <div class="slider-row slider-row-block-size">
+                <div class="slider-label-col">
+                    <label for="blocksize">Block render size:</label>
+                    <span id="blocksize_val" class="slider-value">10</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="blocksize" min="3" max="30" value="10" step="1" class="slider-control">
+                </div>
+            </div>
         </div>
-        <div class="slider-control-col">
-            <input type="range" id="radius" min="1" max="50" value="20" step="1" class="slider-control">
+
+        <div class="canvas-wrap">
+            <canvas id="canvas"></canvas>
         </div>
-    </div>
-    
-    <div class="slider-row">
-        <div class="slider-label-col">
-            <label for="thickness">Line thickness:</label>
-            <span id="thickness_val" class="slider-value">1</span>
-        </div>
-        <div class="slider-control-col">
-            <input type="range" id="thickness" min="1" max="10" value="1" step="1" class="slider-control">
-        </div>
-    </div>
-    
-    <div class="slider-row slider-row-block-size">
-        <div class="slider-label-col">
-            <label for="blocksize">Block render size:</label>
-            <span id="blocksize_val" class="slider-value">10</span>
-        </div>
-        <div class="slider-control-col">
-            <input type="range" id="blocksize" min="3" max="30" value="10" step="1" class="slider-control">
-        </div>
-    </div>
-    
-    <canvas id="canvas"></canvas>
+    </main>
 
     <script>
         initRenderer('canvas');
