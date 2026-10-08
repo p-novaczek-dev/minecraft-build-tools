@@ -2,60 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft Gradient Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles.css">
     <script src="minecraft-renderer.js"></script>
 </head>
 <body>
     <a href="index.html" class="back-button">← Back to Tools</a>
-    <h1>Minecraft Gradient Builder</h1>
-    <div class="slider-row">
-        <div class="slider-label-col">
-            <label for="width">Width:</label>
-            <span id="width_val" class="slider-value">10</span>
+    <main class="page">
+        <header class="page-header">
+            <h1>Minecraft Gradient Builder</h1>
+            <p class="page-subtitle">Create soft black-to-white fades with randomized block placement</p>
+        </header>
+
+        <div class="controls">
+            <div class="slider-row">
+                <div class="slider-label-col">
+                    <label for="width">Width:</label>
+                    <span id="width_val" class="slider-value">10</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="width" min="1" max="100" value="10" step="1" class="slider-control">
+                </div>
+            </div>
+            <div class="slider-row">
+                <div class="slider-label-col">
+                    <label for="height">Height:</label>
+                    <span id="height_val" class="slider-value">20</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="height" min="1" max="100" value="20" step="1" class="slider-control">
+                </div>
+            </div>
+            <div class="slider-row">
+                <div class="slider-label-col">
+                    <label for="fromOpacity">From Opacity (Top):</label>
+                    <span id="fromOpacity_val" class="slider-value">100</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="fromOpacity" min="0" max="100" value="100" step="1" class="slider-control">
+                </div>
+            </div>
+            <div class="slider-row">
+                <div class="slider-label-col">
+                    <label for="toOpacity">To Opacity (Bottom):</label>
+                    <span id="toOpacity_val" class="slider-value">0</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="toOpacity" min="0" max="100" value="0" step="1" class="slider-control">
+                </div>
+            </div>
+            <div class="slider-row slider-row-block-size">
+                <div class="slider-label-col">
+                    <label for="blocksize">Block render size:</label>
+                    <span id="blocksize_val" class="slider-value">10</span>
+                </div>
+                <div class="slider-control-col">
+                    <input type="range" id="blocksize" min="3" max="30" value="10" step="1" class="slider-control">
+                </div>
+            </div>
+            <button id="refresh" class="refresh-button" type="button">Refresh Gradient</button>
         </div>
-        <div class="slider-control-col">
-            <input type="range" id="width" min="1" max="100" value="10" step="1" class="slider-control">
+
+        <div class="canvas-wrap">
+            <canvas id="canvas"></canvas>
         </div>
-    </div>
-    <div class="slider-row">
-        <div class="slider-label-col">
-            <label for="height">Height:</label>
-            <span id="height_val" class="slider-value">20</span>
-        </div>
-        <div class="slider-control-col">
-            <input type="range" id="height" min="1" max="100" value="20" step="1" class="slider-control">
-        </div>
-    </div>
-    <div class="slider-row">
-        <div class="slider-label-col">
-            <label for="fromOpacity">From Opacity (Top):</label>
-            <span id="fromOpacity_val" class="slider-value">100</span>
-        </div>
-        <div class="slider-control-col">
-            <input type="range" id="fromOpacity" min="0" max="100" value="100" step="1" class="slider-control">
-        </div>
-    </div>
-    <div class="slider-row">
-        <div class="slider-label-col">
-            <label for="toOpacity">To Opacity (Bottom):</label>
-            <span id="toOpacity_val" class="slider-value">0</span>
-        </div>
-        <div class="slider-control-col">
-            <input type="range" id="toOpacity" min="0" max="100" value="0" step="1" class="slider-control">
-        </div>
-    </div>
-    <div class="slider-row slider-row-block-size">
-        <div class="slider-label-col">
-            <label for="blocksize">Block render size:</label>
-            <span id="blocksize_val" class="slider-value">10</span>
-        </div>
-        <div class="slider-control-col">
-            <input type="range" id="blocksize" min="3" max="30" value="10" step="1" class="slider-control">
-        </div>
-    </div>
-    <button id="refresh" class="refresh-button">Refresh Gradient</button>
-    <canvas id="canvas"></canvas>
+    </main>
 
     <script>
         initRenderer('canvas');
